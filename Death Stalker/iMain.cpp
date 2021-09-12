@@ -1,4 +1,5 @@
 #include "iGraphics.h"
+#include "background_rendering.h"
 
 #define screenWidth 1200
 #define screenHeight 600
@@ -8,6 +9,12 @@
 void iDraw()
 {
 	iClear();
+	//Background Images Renderring
+	for (int i = 0; i<5; i++)
+	{
+		iShowBMP2(upperBackground[i].x, upperBackground[i].y, upperBackgroundImage[i], 0);
+		iShowBMP2(lowerBackground[i].x, lowerBackground[i].y, lowerBackgroundImage[i], 0);
+	}
 }
 
 /*function iMouseMove() is called when the user presses and drags the mouse.
@@ -82,9 +89,10 @@ void iSpecialKeyboard(unsigned char key)
 
 int main()
 {
-	///srand((unsigned)time(NULL));
+	setAll(); //For Background Renderring
+
 	iInitialize(screenWidth, screenHeight, "Death Stalker");
-	///updated see the documentations
 	iStart();
+
 	return 0;
 }
