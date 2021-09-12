@@ -33,6 +33,9 @@
     <ClInclude Include="background_rendering.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="character_rendering.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="iMain.cpp">

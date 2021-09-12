@@ -66,6 +66,7 @@
   <ItemGroup>
     <ClInclude Include="background_rendering.h" />
     <ClInclude Include="bitmap_loader.h" />
+    <ClInclude Include="character_rendering.h" />
     <ClInclude Include="glaux.h" />
     <ClInclude Include="glut.h" />
     <ClInclude Include="iGraphics.h" />
