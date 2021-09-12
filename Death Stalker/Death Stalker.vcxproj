@@ -70,6 +70,7 @@
     <ClInclude Include="glaux.h" />
     <ClInclude Include="glut.h" />
     <ClInclude Include="iGraphics.h" />
+    <ClInclude Include="menu.h" />
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
