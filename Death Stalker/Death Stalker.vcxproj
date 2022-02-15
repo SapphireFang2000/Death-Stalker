@@ -10,9 +10,21 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="background_rendering.h" />
+    <ClInclude Include="character_rendering.h" />
+    <ClInclude Include="enemyShootKnight.h" />
+    <ClInclude Include="menu.h" />
+    <ClInclude Include="menuBackground.h" />
+    <ClInclude Include="music.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="iMain.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{27B8794A-7CEF-4A1E-B29D-07991A54C6D6}</ProjectGuid>
-    <RootNamespace>DeathStalker</RootNamespace>
+    <ProjectGuid>{799C0764-2328-45AC-9A0E-F37EEFB8F574}</ProjectGuid>
+    <RootNamespace>CupHead</RootNamespace>
+    <ProjectName>Death Stalker</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -44,6 +56,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -63,19 +76,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="background_rendering.h" />
-    <ClInclude Include="bitmap_loader.h" />
-    <ClInclude Include="character_rendering.h" />
-    <ClInclude Include="glaux.h" />
-    <ClInclude Include="glut.h" />
-    <ClInclude Include="iGraphics.h" />
-    <ClInclude Include="menu.h" />
-    <ClInclude Include="stb_image.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="iMain.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -11,31 +11,31 @@ char button2[10][35] = {"Images\\menu\\start2.bmp","Images\\menu\\resume2.bmp","
 
 struct buttonCordinate
 {
-	int x;
-	int y;
+    int x;
+    int y;
 
-}bCordinate[6]; 
+} bCordinate[6];
 
-void buttonCodinateInitialise() 
+void buttonCodinateInitialise()
 {
-	
-		bCordinate[0].x = 800;//Start
-		bCordinate[0].y = 220;
-		
-		bCordinate[1].x = 900;//Resume
-		bCordinate[1].y = 50;
 
-		bCordinate[2].x = 470;//Exit
-		bCordinate[2].y = 0;
+    bCordinate[0].x = 800;//Start
+    bCordinate[0].y = 220;
 
-		bCordinate[3].x = 50;//about
-		bCordinate[3].y = 0;
+    bCordinate[1].x = 900;//Resume
+    bCordinate[1].y = 50;
 
-		bCordinate[4].x = 50;//about
-		bCordinate[4].y = 100;
+    bCordinate[2].x = 470;//Exit
+    bCordinate[2].y = 0;
 
-		bCordinate[5].x = 50;//about
-		bCordinate[5].y = 200;
+    bCordinate[3].x = 50;//about
+    bCordinate[3].y = 0;
+
+    bCordinate[4].x = 50;//about
+    bCordinate[4].y = 100;
+
+    bCordinate[5].x = 50;//about
+    bCordinate[5].y = 200;
 }
 
-#endif  
+#endif

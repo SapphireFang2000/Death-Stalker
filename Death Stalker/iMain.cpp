@@ -1,160 +1,450 @@
-#include "iGraphics.h"
-#include "menu.h"
-#include "background_rendering.h"
-#include "character_rendering.h"
+#include"iGraphics.h"
+#include"enemyShootKnight.h"
+#include"menuBackground.h"
+#include"music.h"
+#include<iostream>
+#include<string>
+#include <sstream>
 
+using namespace std;
 #define screenWidth 1200
 #define screenHeight 600
+#define jumpLimit 250
 
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::Controller::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::://
-int gameState = -1;
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::Idraw Here::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::://
+FILE *fp;
 
-void iDraw()
-{
-	iClear();
+char highscoreStr[10];
 
-	//Home Menu Renderring
-	if (gameState == -1)
-	{
-		iShowBMP(0, 0, "Images\\menu\\background.bmp");//Background of menu
 
-		if (buttonColor == 0)
-		{
-			for (int i = 0; i <= 5; i++)
-			{
-				iShowBMP2(bCordinate[i].x, bCordinate[i].y, button1[i], 0);
-			}
-		}
-		else if (buttonColor == 1)
-		{
-			for (int i = 0; i <= 5; i++)
-			{
-				iShowBMP2(bCordinate[i].x, bCordinate[i].y, button2[i], 0);
-			}
-		}
-	}
-	else if (gameState == 0)
-	{
-		// Background Renderring
-		for (int i = 0; i<5; i++)
-		{
-			iShowBMP2(upperBackground[i].x, upperBackground[i].y, upperBackgroundImage[i], 0);
-			iShowBMP2(lowerBackground[i].x, lowerBackground[i].y, lowerBackgroundImage[i], 0);
-		}
 
-		//Character Renderring
-		if (!standPosition)
-		{
-			iShowBMP2(theKnightCordinateX, theKnightCordinateY, theKnight[theKnightIndex], 0);
-			standCounter++;
-
-			if (standCounter >= 20)
-			{
-				standCounter = 0;
-				theKnightIndex = 0;
-				standPosition = true;
-			}
-		}
-		else
-		{
-			iShowBMP2(theKnightCordinateX, theKnightCordinateY, theKnightStand, 0);
-		}
-	}
-	else if (gameState == 1)//resume
-	{
-		iShowBMP2(300, 300, button1[1], 0);
-	}
-	else if (gameState == 2)//exit
-	{
-		exit(0);
-		/*iShowBMP2(300,300,button1[2], 0);*/
-	}
-	else if (gameState == 3)//About Us
-	{
-		iShowBMP2(300, 300, button1[3], 0);
-	}
-	else if (gameState == 4)//high score
-	{
-		iShowBMP2(300, 300, button1[4], 0);
-	}
-	else if (gameState == 5)//story
-	{
-		iShowBMP2(0, 0, "Images\\menu\\story\\1.bmp", 0);
-	}
-	else
-	{
-
-	}
-
-	iShowBMP2(pointer_x, pointer_y, "Images\\menu\\pointer1.bmp", 0);
-}
-
-/*function iMouseMove() is called when the user presses and drags the mouse.
-(mx, my) is the position where the mouse pointer is.
+int mposx, mposy;
+/*
+function iDraw() is called again and again by the system.
 */
 
 
-void iMouseMove(int mx, int my)
-{
 
+
+void iDraw()
+{
+    //place your drawing codes here
+
+    iClear();
+
+
+    if (gamestate == -1)
+    {
+        iShowBMP(0, 0, homemenu);
+
+        iShowBMP2(1000, 25, "Music\\music1.bmp", 0);
+        iText(980, 170, "Music Turn On/Off", GLUT_BITMAP_TIMES_ROMAN_24);
+
+        for (int i = 0; i < 6; i++)
+        {
+            iShowBMP2(bcoordinate[i].x, bcoordinate[i].y, button1[i], 0);
+        }
+    }
+    else if (gamestate == 0 )
+    {
+        if (newGame)
+        {
+            //pause or restart option
+            num = 0;
+            setAll();
+            file1 = 0;
+            knightOn = true;
+            for (int i = 0; i < 10000; i++)
+            {
+                s[i].shootOn = false;
+                s[i].x = 0;
+            }
+            for (int i = 0; i < 100; i++)
+            {
+                e1[i].x = 1200;
+                e2[i].x = 1200;
+                e3[i].x = 1200;
+                e1[i].On = false;
+                e2[i].On = false;
+                e3[i].On = false;
+
+            }
+
+            knightHealth = 10;
+            knightCordinateX = 50, knightCordinateY = 135;
+            flowerHealth = 20;
+            flowerOn = false;
+            gameEnd = false;
+            newGame = false;
+
+        }
+        if (num >= 100)
+        {
+            flowerOn = true;
+        }
+        for (int i = 0; i< 62; i++)
+        {
+            iShowBMP(upperBackground[i].x, upperBackground[i].y, ubImage[i]);
+            iShowBMP(lowerBackground[i].x, lowerBackground[i].y, lbImage[i]);
+        }
+        if (!flowerOn)
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                if (e1[i].On)
+                    iShowBMP2(e1[i].x, e1[i].y, roundEnemy[roundEnemyPictureIndex], 255);
+                if (e2[i].On)
+                    iShowBMP2(e2[i].x, e2[i].y, turtleEnemy[turtleEnemyPictureIndex], 255);
+                if (e3[i].On)
+                    iShowBMP2(e3[i].x, e3[i].y, ghostEnemy[ghostEnemyPictureIndex], 255);
+                if (e4[i].On)
+                    iShowBMP2(e4[i].x, e4[i].y, rockEnemy[rockEnemyPictureIndex], 255);
+                if (e5[i].On)
+                    iShowBMP2(e5[i].x, e5[i].y, fireEnemy[fireEnemyPictureIndex], 255);
+            }
+        }
+
+        for (int i = 0; i < 10000; i++)
+        {
+            if (s[i].shootOn)
+            {
+                iShowBMP2(s[i].x, s[i].y, "images\\shoot\\1.bmp", 255);
+
+            }
+        }
+        if (knightOn)
+        {
+            knightHealthX = 600, knightHealthY = 550;
+            for (int i = 0; i < knightHealth; i++)
+            {
+                iShowBMP2(knightHealthX, knightHealthY, "images\\HealthIcon.bmp", 0);
+                knightHealthX += 60;
+            }
+            if (knightJumpOn)
+            {
+                if (knightJumpUp)
+                {
+                    iShowBMP2(knightCordinateX, knightCordinateY + knightCordinateJump, knightJump[knightJumpIndex], 0);
+                }
+                else
+                {
+                    iShowBMP2(knightCordinateX, knightCordinateY + knightCordinateJump, knightJump[knightJumpIndex], 0);
+                }
+            }
+
+            else
+            {
+                if (!knightIdelOn)
+                {
+                    knightIdelCounter++;
+                    if (knightFRunOn)
+                    {
+                        iShowBMP2(knightCordinateX, knightCordinateY, knightFRun[knightFRunIndex], 0);
+                    }
+                    else if (knightDuckOn)
+                    {
+                        iShowBMP2(knightCordinateX, knightCordinateY, "images//1.bmp", 255);
+                    }
+                    else
+                        iShowBMP2(knightCordinateX, knightCordinateY, knightBRun[knightBRunIndex], 0);
+                    if (knightIdelCounter >= 5)
+                    {
+                        knightFRunOn = false;
+                        knightDuckOn = false;
+                        knightIdelCounter = 0;
+                        knightIdelOn = true;
+                        knightFRunIndex = 0;
+                        knightBRunIndex = 0;
+                    }
+                }
+                else
+                    iShowBMP2(knightCordinateX, knightCordinateY, knightIdel[knightIdelIndex], 0);
+
+
+            }
+            if (flowerOn)
+            {
+                flowerHealthX = 400, flowerHealthY = 500;
+                for (int i = 0; i < flowerHealth; i++)
+                {
+                    iShowBMP2(flowerHealthX, flowerHealthY, "images\\BossHealthIcon.bmp", 255);
+                    flowerHealthX += 40;
+                }
+                if (flowerIdealOn)
+                {
+                    iShowBMP2(flowerCoordinateX, flowerCoordinateY, flowerIdeal[flowerIdealIndex], 255);
+                }
+                if (flower1AttackOn)
+                {
+                    iShowBMP2(flowerCoordinateX, flowerCoordinateY, flower1Attack[flower1AttackIndex], 255);
+                }
+                if (flower2AttackOn)
+                {
+                    iShowBMP2(flowerCoordinateX, flowerCoordinateY, flower2Attack[flower2AttackIndex], 255);
+                }
+                if (flowerDeathOn)
+                {
+                    iShowBMP2(flowerCoordinateX, flowerCoordinateY, flowerDeath[flowerDeathIndex], 255);
+                }
+                for (int i = 0; i < 100; i++)
+                {
+                    if (fs[i].On)
+                        iShowBMP2(fs[i].x, fs[i].y, flowerAcorn[flowerAcornIndex], 255);
+                }
+            }
+        }
+        _itoa(num, strnum, 10);
+        iSetColor(rand() % 255, rand() % 255, rand() % 255);
+        iText(1085, 20, "Score: ", GLUT_BITMAP_TIMES_ROMAN_24);
+        iText(1150, 20, strnum,GLUT_BITMAP_TIMES_ROMAN_24);
+
+    }
+    else if (gamestate == 1)
+    {
+        iShowBMP(0, 0, score);
+      
+        fp = fopen("highscore.txt", "r");
+        int highscoreArray[1000];
+        for (int i = 0; i < 1000; i++)
+        {
+            highscoreArray[i] = -1;
+        }
+
+        for (int i = 0; fscanf(fp, "%d", &highscoreArray[i]) != EOF; i++)
+        {
+
+        }
+        int temp = 0;
+        for (int i = 0; i < 1000; i++)
+        {
+            for (int j = i; j < 1000; j++)
+            {
+                if (highscoreArray[i] < highscoreArray[j])
+                {
+                    temp = highscoreArray[i];
+                    highscoreArray[i] = highscoreArray[j];
+                    highscoreArray[j] = temp;
+                }
+            }
+        }
+
+
+
+        fclose(fp);
+        fp = fopen("highscore.txt", "w");
+
+        for (int i = 0; i < 10; i++)
+        {
+            fprintf(fp, "%d\n",highscoreArray[i]);
+        }
+        fclose(fp);
+
+        fp = fopen("highscore.txt", "r");
+        int highscore[5];
+        fscanf(fp, "%d%d%d%d%d", &highscore[0], &highscore[1], &highscore[2], &highscore[3], &highscore[4]);
+        _itoa(highscore[0], highscoreStr, 10);
+        iSetColor(255, 255, 255);
+        _itoa(highscore[0], highscoreStr, 10);
+        iText(440, 350, highscoreStr, GLUT_BITMAP_TIMES_ROMAN_24);
+        iText(410, 350, "1 .", GLUT_BITMAP_TIMES_ROMAN_24);
+
+        _itoa(highscore[1], highscoreStr, 10);
+        iText(440, 300, highscoreStr, GLUT_BITMAP_TIMES_ROMAN_24);
+        iText(410, 300, "2 .", GLUT_BITMAP_TIMES_ROMAN_24);
+
+        _itoa(highscore[2], highscoreStr, 10);
+        iText(440, 250, highscoreStr, GLUT_BITMAP_TIMES_ROMAN_24);
+        iText(410, 250, "3 .", GLUT_BITMAP_TIMES_ROMAN_24);
+
+        _itoa(highscore[3], highscoreStr, 10);
+        iText(440, 200, highscoreStr, GLUT_BITMAP_TIMES_ROMAN_24);
+        iText(410, 200, "4 .", GLUT_BITMAP_TIMES_ROMAN_24);
+
+        _itoa(highscore[4], highscoreStr, 10);
+        iText(440, 150, highscoreStr, GLUT_BITMAP_TIMES_ROMAN_24);
+        iText(410, 150, "5 .", GLUT_BITMAP_TIMES_ROMAN_24);
+
+
+        fclose(fp);
+
+
+
+    }
+    else if (gamestate == 2)
+    {
+
+        iShowBMP2(0, 0, "images\\bc\\instuction1.bmp", 0);
+
+    }
+    else if (gamestate == 3)
+    {
+
+        iShowBMP2(0, 0, "images\\bc\\about_us1.bmp", 0);
+
+    }
+
+
+    else if (gamestate == 4)
+    {
+
+        iSetColor(0, 0, 0);
+        exit(0);
+    }
+    else if (gamestate == 5) // show story 5* 6* 7*
+    {
+        iShowBMP2(0, 0, story1,0);
+        iShowBMP2(550, 20, next1,0);
+    }
+    else if (gamestate == 6)
+    {
+        iShowBMP(0, 0, story2);
+        iShowBMP2(950, 50, next1,0);
+    }
+    else if (gamestate == 7)
+    {
+        iShowBMP(0, 0, story3);
+        iShowBMP2(1000, 165, next1,0);
+    }
+    if (gameEnd)
+    {
+        iSetColor(rand() % 255, rand() % 255, rand() % 255);
+        iShowBMP(0, 0, "images\\GameOver.bmp");
+        iText(50, 25, "Press q to go back to main menu", GLUT_BITMAP_TIMES_ROMAN_24);
+        _itoa(num, strnum, 10);
+        iSetColor(rand() % 255, rand() % 255, rand() % 255);
+        iText(1085, 20, "Score: ", GLUT_BITMAP_TIMES_ROMAN_24);
+        iText(1150, 20, strnum, GLUT_BITMAP_TIMES_ROMAN_24);
+        if (file) 					
+        {
+            fp = fopen("highscore.txt", "a");
+            fprintf(fp, "%d \n", num);
+            fclose(fp);
+            file = false;
+        }
+
+
+
+    }
 }
 
-//*******************************************************************ipassiveMouse***********************************************************************//
+/*
+function iMouseMove() is called when the user presses and drags the mouse.
+(mx, my) is the position where the mouse pointer is.
+*/
+void iMouseMove(int mx, int my)
+{
+    //place your codes here
+}
+
+/*
+function iMouse() is called when the user presses/releases the mouse.
+(mx, my) is the position where the mouse pointer is.
+*/
+void iMouse(int button, int state, int mx, int my)
+{
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            if (mx >= bcoordinate[i].x && mx <= bcoordinate[i].x + 215 && my >= bcoordinate[i].y && my <= bcoordinate[i].y + 60)
+            {
+                if (i == 0)
+                    gamestate = 5;
+                gamestate = i;
+                if (i == 0)
+                    music();
+                else if (i == 1)
+                    music();
+                else if (i == 2)
+                    music();
+                else  PlaySound("Music\\music2.wav", NULL, SND_LOOP | SND_ASYNC);
+            }
+        }
+        if (mx >= bcoordinate[5].x && mx <= bcoordinate[5].x + 215 && my >= bcoordinate[5].y && my <= bcoordinate[5].y + 60)
+        {
+            gamestate = 5;
+            newGame = true;
+            gameEnd = false;
+        }
+        if (mx >= 1075 && mx <= 1200 && my >= 0 && my <= 50)
+        {
+            gamestate = -1;
+            PlaySound("Music\\music1.wav", NULL, SND_LOOP | SND_ASYNC);
+        }
+        //for story
+        if (mx >= 550 && mx <= 800 && my >= 0 && my <= 150)
+        {
+            gamestate = 6;
+        }
+        if (mx >= 950 && mx <= 1050 && my >= 50 && my <= 200)
+        {
+            gamestate = 7;
+        }
+        if (mx >= 1000 && mx <= 1200 && my >= 165 && my <= 300)
+        {
+            gamestate = 0;
+        }
+        if (mx >= 950 && mx <= 1100 && my >= 50 && my <= 200)
+        {
+            musicon = false;
+        }
+        //place your codes here
+
+    }
+    if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
+    {
+        //place your codes here
+    }
+    printf("%d %d ", mx, my);
+}
+/*iPassiveMouseMove is called to detect and use
+the mouse point without pressing any button */
 
 void iPassiveMouseMove(int mx, int my)
 {
-	pointer_x = mx - 31;
-	pointer_y = my - 16;
-	for (int i = 0; i<3; i++) //need correction only exit button changes
-	{
-		if (pointer_x >= bCordinate[i].x && pointer_x <= bCordinate[i].x + 294 && pointer_y >= bCordinate[i].y && pointer_y <= bCordinate[i].y + 214)
-		{
-			buttonColor = 1;
-			printf("\n----Color \t Color \t-----\n");
-		}
-		else
-		{
-			buttonColor = 0;
-		}
+    //place your code here
 
-	}
-}
+    mposx = mx;
+    mposy = my;
 
-void iMouse(int button, int state, int mx, int my)
-{
+    if (mx == 2) {}       /*Something to do with mx*/
+    else if (my == 2) {}  /*Something to do with my*/
 
-	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
-	{
-		{
-			for (int i = 0; i <= 5; i++)
-			{
-				if (mx >= bCordinate[i].x && mx <= bCordinate[i].x + 294 && my >= bCordinate[i].y && my <= bCordinate[i].y + 214)
-				{
-					gameState = i;
-				}
-			}
-			printf("x=%d y=%d\n", mx, my);
-		}
-	}
-
-	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
-	{
-
-	}
 }
 
 /*
 function iKeyboard() is called whenever the user hits a key in keyboard.
 key- holds the ASCII value of the key pressed.
 */
-
 void iKeyboard(unsigned char key)
 {
-	if (key == '\r')
-	{
+    if (key == 'p')
+    {
 
-	}
+    }
+    if (key == 'q')
+    {
+        gamestate = -1;
+        gameEnd = false;
+    }
+    if (key == 'z')
+    {
+        s[shootindex].x = knightCordinateX + 15;
+        s[shootindex].y = knightCordinateY + knightCordinateJump + 15;
+        s[shootindex].shootOn = true;
+        shootindex++;
+        if (shootindex > 10000)
+            shootindex = 0;
+
+    }
+    if (key == 's')
+    {
+        gamestate = 0;
+    }
+    if (key == 'm')
+    {
+        musicon =false ;
+    }
+    //place your codes for other keys here
 }
 
 /*
@@ -166,51 +456,112 @@ GLUT_KEY_F7, GLUT_KEY_F8, GLUT_KEY_F9, GLUT_KEY_F10, GLUT_KEY_F11, GLUT_KEY_F12,
 GLUT_KEY_LEFT, GLUT_KEY_UP, GLUT_KEY_RIGHT, GLUT_KEY_DOWN, GLUT_KEY_PAGE UP,
 GLUT_KEY_PAGE DOWN, GLUT_KEY_HOME, GLUT_KEY_END, GLUT_KEY_INSERT
 */
-
 void iSpecialKeyboard(unsigned char key)
 {
 
 
-	if (key == GLUT_KEY_RIGHT)
-	{
-		theKnightCordinateX += 10;
+    if (key == GLUT_KEY_UP)
+    {
 
-		theKnightIndex++;
+        if (gamestate == 0)
+        {
+            if (!knightJumpOn)
+            {
+                knightJumpOn = true;
+                knightJumpUp = true;
+            }
+        }
+    }
+    if (key == GLUT_KEY_DOWN)
+    {
 
-		if (theKnightIndex >= 9)
-		{
-			theKnightIndex = 0;
-		}
+    }
+    if (key == GLUT_KEY_RIGHT)
+    {
+        if (gamestate == 0)
+        {
+            knightIdelOn = false;
+            knightFRunOn = true;
 
-		standPosition = false;
-	}
-	else if (key == GLUT_KEY_LEFT)
-	{
-		theKnightCordinateX -= 10;
+            if (knightCordinateX <= 1100 && knightCordinateX >= 0)
+                knightCordinateX += 30;  //knight speed
+            knightFRunIndex++;
+            if (knightFRunIndex >= 8)
+                knightFRunIndex = 0;
+            if (knightCordinateX >= 200)
+            {
+                for (int i = 0; i < 62; i++)
+                {
+                    upperBackground[i].x -= 5;
+                    lowerBackground[i].x -= 5;
 
-		theKnightIndex--;
+                    if (upperBackground[i].x <= 0)
+                    {
+                        upperBackground[i].x = 1200;
 
-		if (theKnightIndex <= 0)
-		{
-			theKnightIndex = 7;
-		}
-
-		standPosition = false;
-	}
-	else if (key == GLUT_KEY_HOME)
-	{
-
-	}
+                    }
+                    if (lowerBackground[i].x <= 0)
+                    {
+                        lowerBackground[i].x = 1200;
+                    }
+                }
+            }
+        }
+    }
+    if (key == GLUT_KEY_LEFT)
+    {
+        if (gamestate == 0)
+        {
+            knightIdelOn = false;
+            knightFRunOn = false;
+            if (knightCordinateX >= 100)
+                knightCordinateX -= 30;  //knight speed
+            knightBRunIndex++;
+            if (knightBRunIndex >= 8)
+                knightBRunIndex = 0;
+        }
+    }
+    //place your codes for other keys here
 }
+
+
+
+
+
+
+
+
+
 
 
 int main()
 {
-	buttonCodinateInitialise();//For Button Control
-	setAll();//For Background Image Renderring
 
-	iInitialize(screenWidth, screenHeight, "Death Stalker");
-	iStart();
+    //place your own initialization codes here.
+    iSetTimer(1000, music);
+    int sum = 100;
+    for (int i = 4; i >= 0; i--)
+    {
+        bcoordinate[i].x = 0;
+        bcoordinate[i].y = sum;
+        sum = sum + 80;
+    }
+    bcoordinate[5].x = 0;
+    bcoordinate[5].y = 500;
+    setAll();
+    iSetTimer(40, jumpNShootSpeedNIdeal);
 
-	return 0;
+
+    iSetTimer(800, arriveEnemy);
+    iSetTimer(100, enemySpeed);
+
+
+    iSetTimer(100, flowerBoss);
+    iSetTimer(5000, fAttackStart);
+
+
+
+
+    iInitialize(screenWidth, screenHeight, "Death Stalker");
+    return 0;
 }
