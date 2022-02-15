@@ -3,7 +3,6 @@
 #include<iostream>
 #include<string>
 #include <sstream>
-
 using namespace std;
 #define screenWidth 1200
 #define screenHeight 600

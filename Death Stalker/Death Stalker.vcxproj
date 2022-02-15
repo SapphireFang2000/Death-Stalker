@@ -11,8 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="background_rendering.h" />
-    <ClInclude Include="character_rendering.h" />
     <ClInclude Include="enemyShootKnight.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="menuBackground.h" />

@@ -4,7 +4,6 @@
 #include<iostream>
 #include<string>
 #include <sstream>
-
 using namespace std;
 
 int forceStop = 0;

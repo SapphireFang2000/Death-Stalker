@@ -13,7 +13,22 @@ using namespace std;
 
 FILE *fp;
 
+
+char str[100], str2[100];
+int len;
+int mode;
+
+
+void drawTextBox()
+{
+    iSetColor(150, 150, 150);
+    iRectangle(50, 250, 250, 30);
+}
+
+
 char highscoreStr[10];
+int indexNumber = 0;
+char nameinp[1000];
 
 
 
@@ -37,18 +52,21 @@ void iDraw()
         iShowBMP(0, 0, homemenu);
 
         iShowBMP2(1000, 25, "Music\\music1.bmp", 0);
+        //iSetColor(rand() % 255, rand() % 255, rand() % 255);
         iText(980, 170, "Music Turn On/Off", GLUT_BITMAP_TIMES_ROMAN_24);
 
         for (int i = 0; i < 6; i++)
         {
+
             iShowBMP2(bcoordinate[i].x, bcoordinate[i].y, button1[i], 0);
         }
     }
     else if (gamestate == 0 )
     {
-        if (newGame)
+
+
+        if (newGame)       //pause or restart option
         {
-            //pause or restart option
             num = 0;
             setAll();
             file1 = 0;
@@ -68,7 +86,6 @@ void iDraw()
                 e3[i].On = false;
 
             }
-
             knightHealth = 10;
             knightCordinateX = 50, knightCordinateY = 135;
             flowerHealth = 20;
@@ -83,8 +100,11 @@ void iDraw()
         }
         for (int i = 0; i< 62; i++)
         {
+
+
             iShowBMP(upperBackground[i].x, upperBackground[i].y, ubImage[i]);
             iShowBMP(lowerBackground[i].x, lowerBackground[i].y, lbImage[i]);
+
         }
         if (!flowerOn)
         {
@@ -193,7 +213,10 @@ void iDraw()
             }
         }
         _itoa(num, strnum, 10);
-        iSetColor(rand() % 255, rand() % 255, rand() % 255);
+        iSetColor(255,255,255);
+        iText(50, 550,"Player Name : ", GLUT_BITMAP_TIMES_ROMAN_24);
+        iText(195, 550, str2, GLUT_BITMAP_TIMES_ROMAN_24);
+
         iText(1085, 20, "Score: ", GLUT_BITMAP_TIMES_ROMAN_24);
         iText(1150, 20, strnum,GLUT_BITMAP_TIMES_ROMAN_24);
 
@@ -234,7 +257,7 @@ void iDraw()
 
         for (int i = 0; i < 10; i++)
         {
-            fprintf(fp, "%d\n",highscoreArray[i]);
+            fprintf(fp, "%d\n", highscoreArray[i]);
         }
         fclose(fp);
 
@@ -268,12 +291,13 @@ void iDraw()
 
 
 
+
     }
     else if (gamestate == 2)
     {
 
         iShowBMP2(0, 0, "images\\bc\\instuction1.bmp", 0);
-
+        
     }
     else if (gamestate == 3)
     {
@@ -288,6 +312,7 @@ void iDraw()
 
         iSetColor(0, 0, 0);
         exit(0);
+
     }
     else if (gamestate == 5) // show story 5* 6* 7*
     {
@@ -304,6 +329,19 @@ void iDraw()
         iShowBMP(0, 0, story3);
         iShowBMP2(1000, 165, next1,0);
     }
+    else if (gamestate == 8)
+    {
+
+        iShowBMP(0, 0, "images\\nameinput.bmp");
+        //drawTextBox();
+        if (mode == 1)
+        {
+            iSetColor(255, 255, 255);
+            iText(450, 280, str, GLUT_BITMAP_TIMES_ROMAN_24);
+        }
+        iText(500, 500, nameinp, GLUT_BITMAP_TIMES_ROMAN_24);
+
+    }
     if (gameEnd)
     {
         iSetColor(rand() % 255, rand() % 255, rand() % 255);
@@ -313,7 +351,7 @@ void iDraw()
         iSetColor(rand() % 255, rand() % 255, rand() % 255);
         iText(1085, 20, "Score: ", GLUT_BITMAP_TIMES_ROMAN_24);
         iText(1150, 20, strnum, GLUT_BITMAP_TIMES_ROMAN_24);
-        if (file) 					
+        if (file)
         {
             fp = fopen("highscore.txt", "a");
             fprintf(fp, "%d \n", num);
@@ -356,7 +394,8 @@ void iMouse(int button, int state, int mx, int my)
                     music();
                 else if (i == 2)
                     music();
-                else  PlaySound("Music\\music2.wav", NULL, SND_LOOP | SND_ASYNC);
+                else
+                    PlaySound("Music\\music2.wav", NULL, SND_LOOP | SND_ASYNC);
             }
         }
         if (mx >= bcoordinate[5].x && mx <= bcoordinate[5].x + 215 && my >= bcoordinate[5].y && my <= bcoordinate[5].y + 60)
@@ -381,11 +420,16 @@ void iMouse(int button, int state, int mx, int my)
         }
         if (mx >= 1000 && mx <= 1200 && my >= 165 && my <= 300)
         {
-            gamestate = 0;
+            gamestate = 8;
         }
         if (mx >= 950 && mx <= 1100 && my >= 50 && my <= 200)
         {
             musicon = false;
+        }
+
+        if (mx >= 400 && mx <= 700 && my >= 200 && my <= 400 && mode == 0)
+        {
+            mode = 1;
         }
         //place your codes here
 
@@ -417,16 +461,36 @@ key- holds the ASCII value of the key pressed.
 */
 void iKeyboard(unsigned char key)
 {
-    if (key == 'p')
+    int i;
+    if (mode == 1)
     {
-
+        if (key == '\r')
+        {
+            mode = 0;
+            strcpy(str2, str);
+            printf("%s\n", str2);
+            for (i = 0; i < len; i++)
+                str[i] = 0;
+            len = 0;
+            gamestate = 0;
+        }
+        else
+        {
+            str[len] = key;
+            len++;
+        }
     }
-    if (key == 'q')
+
+    if (key == '-' && gamestate!=8) //"-" for enter
+    {
+        gamestate = 0;
+    }
+    if (key == 'q' && gamestate != 8)
     {
         gamestate = -1;
         gameEnd = false;
     }
-    if (key == 'z')
+    if (key == 'z' && gamestate != 8)
     {
         s[shootindex].x = knightCordinateX + 15;
         s[shootindex].y = knightCordinateY + knightCordinateJump + 15;
@@ -436,11 +500,11 @@ void iKeyboard(unsigned char key)
             shootindex = 0;
 
     }
-    if (key == 's')
+    if (key == 's' && gamestate != 8)
     {
         gamestate = 0;
     }
-    if (key == 'm')
+    if (key == 'm' && gamestate != 8 )
     {
         musicon =false ;
     }
@@ -536,7 +600,9 @@ void iSpecialKeyboard(unsigned char key)
 
 int main()
 {
-
+    len = 0;
+    mode = 0;
+    str[0] = 0;
     //place your own initialization codes here.
     iSetTimer(1000, music);
     int sum = 100;
@@ -552,7 +618,7 @@ int main()
     iSetTimer(40, jumpNShootSpeedNIdeal);
 
 
-    iSetTimer(800, arriveEnemy);
+    iSetTimer(800, arriveEnemy); //
     iSetTimer(100, enemySpeed);
 
 

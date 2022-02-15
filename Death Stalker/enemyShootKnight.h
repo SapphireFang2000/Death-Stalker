@@ -604,7 +604,14 @@ void fAttackStart()
         }
     }
 }
+typedef struct UserName usename;
+struct UserName
+{
 
+    char name[10];
+    char highscoreStr[10];
+    int highscore[10];
+} user[10];
 
 
 
